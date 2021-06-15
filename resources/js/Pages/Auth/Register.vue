@@ -13,6 +13,11 @@
             </div>
 
             <div class="mt-4">
+                <jet-label for="nick_name" value="Nick name" />
+                <jet-input id="name" type="text" class="mt-1 block w-full" v-model="form.nick_name" required />
+            </div>
+
+            <div class="mt-4">
                 <jet-label for="email" value="Email" />
                 <jet-input id="email" type="email" class="mt-1 block w-full" v-model="form.email" required />
             </div>
@@ -76,6 +81,7 @@
             return {
                 form: this.$inertia.form({
                     name: '',
+                    nick_name: '',
                     email: '',
                     password: '',
                     password_confirmation: '',
