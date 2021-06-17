@@ -22,7 +22,8 @@
     <modal :show="showModal" @close="changeStateShowCreatePost">
       <div class="p-5">
         <div class="">
-          <input v-model="text"
+          <input
+            v-model="text"
             type="text"
             class="
               w-full
@@ -43,7 +44,8 @@
             />
             <div>
               <div class="flex justify-end">
-                <button @click="selectImage"
+                <button
+                  @click="selectImage"
                   class="
                     outline-none
                     focus:outline-none
@@ -70,7 +72,8 @@
                     />
                   </svg>
                 </button>
-                <input id="image"
+                <input
+                  id="image"
                   @change="filechange"
                   type="file"
                   name="image"
@@ -78,9 +81,11 @@
                   style="display: none"
                 />
               </div>
-              <div class="text-red-500 p-2 mt-5">Error</div>
+              <div class="text-red-500 p-2 mt-5">{{ this.error }}</div>
             </div>
-            <button v-if="text.length > 0 && image != null"
+            <button
+              @click="createPost"
+              v-if="text.length > 0 && image != null"
               class="
                 w-full
                 my-3
@@ -114,7 +119,9 @@ export default {
       showModal: false,
       url: null,
       image: null,
-      text: ''
+      text: "",
+      posts: [],
+      error: null
     };
   },
   components: {
@@ -126,13 +133,45 @@ export default {
       this.showModal = !this.showModal;
     },
     filechange(e) {
-        let file = e.target.files[0]
-        this.image = file
-        this.url = URL.createObjectURL(file)
+      let file = e.target.files[0];
+      this.image = file;
+      this.url = URL.createObjectURL(file);
     },
-    selectImage(){
-        document.getElementById('image').click()
-    }
+    selectImage() {
+      document.getElementById("image").click();
+    },
+    async createPost() {
+      const formData = new FormData();
+      formData.append("image", this.image);
+      formData.append("text", this.text);
+
+      await axios
+        .post("/create-post", formData, {
+          headers: {
+            "Content-type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          this.posts.unshift(response.data);
+
+          this.resetData();
+        })
+        .catch((error) => {
+          if (error.response.status === 422) {
+            this.error = error.response.data.errors.image[0]
+
+            setTimeout(() =>{
+              this.error = null
+          },5000)
+          }
+        })
+    },
+    resetData() {
+      this.showModal = false;
+      this.url = null;
+      this.image = null;
+      this.text = "";
+    },
   },
 };
 </script>

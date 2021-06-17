@@ -18589,8 +18589,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _Components_PostComponent__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/Components/PostComponent */ "./resources/js/Components/PostComponent.vue");
-/* harmony import */ var _Jetstream_Modal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/Jetstream/Modal */ "./resources/js/Jetstream/Modal.vue");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _Components_PostComponent__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/Components/PostComponent */ "./resources/js/Components/PostComponent.vue");
+/* harmony import */ var _Jetstream_Modal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/Jetstream/Modal */ "./resources/js/Jetstream/Modal.vue");
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -18599,12 +18607,14 @@ __webpack_require__.r(__webpack_exports__);
       showModal: false,
       url: null,
       image: null,
-      text: ''
+      text: "",
+      posts: [],
+      error: null
     };
   },
   components: {
-    PostComponent: _Components_PostComponent__WEBPACK_IMPORTED_MODULE_0__.default,
-    Modal: _Jetstream_Modal__WEBPACK_IMPORTED_MODULE_1__.default
+    PostComponent: _Components_PostComponent__WEBPACK_IMPORTED_MODULE_1__.default,
+    Modal: _Jetstream_Modal__WEBPACK_IMPORTED_MODULE_2__.default
   },
   methods: {
     changeStateShowCreatePost: function changeStateShowCreatePost() {
@@ -18616,7 +18626,51 @@ __webpack_require__.r(__webpack_exports__);
       this.url = URL.createObjectURL(file);
     },
     selectImage: function selectImage() {
-      document.getElementById('image').click();
+      document.getElementById("image").click();
+    },
+    createPost: function createPost() {
+      var _this = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
+        var formData;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                formData = new FormData();
+                formData.append("image", _this.image);
+                formData.append("text", _this.text);
+                _context.next = 5;
+                return axios.post("/create-post", formData, {
+                  headers: {
+                    "Content-type": "multipart/form-data"
+                  }
+                }).then(function (response) {
+                  _this.posts.unshift(response.data);
+
+                  _this.resetData();
+                })["catch"](function (error) {
+                  if (error.response.status === 422) {
+                    _this.error = error.response.data.errors.image[0];
+                    setTimeout(function () {
+                      _this.error = null;
+                    }, 5000);
+                  }
+                });
+
+              case 5:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }))();
+    },
+    resetData: function resetData() {
+      this.showModal = false;
+      this.url = null;
+      this.image = null;
+      this.text = "";
     }
   }
 });
@@ -23258,17 +23312,12 @@ var _hoisted_6 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("
 /* HOISTED */
 );
 
-var _hoisted_7 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
+var _hoisted_7 = {
   "class": "text-red-500 p-2 mt-5"
-}, "Error", -1
-/* HOISTED */
-);
-
-var _hoisted_8 = {
-  key: 1,
-  "class": "\r\n                w-full\r\n                my-3\r\n                mb-5\r\n                text-center\r\n                bg-blue-500\r\n                rounded\r\n                text-white\r\n                py-2\r\n                outline-none\r\n                focus:outline-none\r\n                hover:bg-blue-600\r\n              "
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
+  var _this = this;
+
   var _component_post_component = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("post-component");
 
   var _component_modal = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("modal");
@@ -23320,7 +23369,15 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         }
       }, null, 32
       /* HYDRATE_EVENTS */
-      )]), _hoisted_7]), $data.text.length > 0 && $data.image != null ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("button", _hoisted_8, " Publicar ")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])])];
+      )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_this.error), 1
+      /* TEXT */
+      )]), $data.text.length > 0 && $data.image != null ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("button", {
+        key: 1,
+        onClick: _cache[5] || (_cache[5] = function () {
+          return $options.createPost && $options.createPost.apply($options, arguments);
+        }),
+        "class": "\r\n                w-full\r\n                my-3\r\n                mb-5\r\n                text-center\r\n                bg-blue-500\r\n                rounded\r\n                text-white\r\n                py-2\r\n                outline-none\r\n                focus:outline-none\r\n                hover:bg-blue-600\r\n              "
+      }, " Publicar ")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])])];
     }),
     _: 1
     /* STABLE */
