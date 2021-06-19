@@ -1,2 +1,2 @@
 # grifftagram
- Red social, base de datos en Mysql, Realizada con laravel e inertia
+ Red social, base de datos en Mysql, Realizada con laravel e inertia, Vue.js
