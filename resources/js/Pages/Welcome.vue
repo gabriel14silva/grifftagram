@@ -17,7 +17,16 @@
     >
       Agregar publicación
     </button>
-    <post-component></post-component>
+
+    <div v-if="posts.length > 0">
+      <post-component
+        v-for="(post, index) in posts"
+        :key="index"
+        :post="post"
+      ></post-component>
+    </div>
+
+    <div v-else class="text-3x1">No hay publicaciones</div>
 
     <modal :show="showModal" @close="changeStateShowCreatePost">
       <div class="p-5">
@@ -121,7 +130,7 @@ export default {
       image: null,
       text: "",
       posts: [],
-      error: null
+      error: null,
     };
   },
   components: {
@@ -129,6 +138,11 @@ export default {
     Modal,
   },
   methods: {
+    async getPosts() {
+      await axios.get("/list-posts").then((response) => {
+        this.posts = response.data;
+      });
+    },
     changeStateShowCreatePost() {
       this.showModal = !this.showModal;
     },
@@ -158,13 +172,13 @@ export default {
         })
         .catch((error) => {
           if (error.response.status === 422) {
-            this.error = error.response.data.errors.image[0]
+            this.error = error.response.data.errors.image[0];
 
-            setTimeout(() =>{
-              this.error = null
-          },5000)
+            setTimeout(() => {
+              this.error = null;
+            }, 5000);
           }
-        })
+        });
     },
     resetData() {
       this.showModal = false;
@@ -172,6 +186,9 @@ export default {
       this.image = null;
       this.text = "";
     },
+  },
+  created() {
+    this.getPosts();
   },
 };
 </script>

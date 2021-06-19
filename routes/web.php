@@ -31,4 +31,5 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     //Posts
     Route::post('/create-post', [PostController::class,'createPost'])->name('create-post');
+    Route::get('/list-posts', [PostController::class,'getPosts'])->name('list-post');
 });

@@ -35,21 +35,21 @@
           "
         >
           <img
-            src="https://images.pexels.com/photos/3460478/pexels-photo-3460478.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
-            class="h-9 w-9 rounded-full object-cover"
-            alt="usuario"
+            :src="post.user.profile_photo_url"
+            :alt="post.user.name"
+            class="h-8 w-8 rounded-full object-cover"
           />
           <div>
-            <p class="block ml-2 font-bold">Clark J</p>
-            <span class="block ml-2 text-xs text-gray-600">5 minutes</span>
+            <p class="block ml-2 font-bold">{{ post.user.nick_name }}</p>
+            <span class="block ml-2 text-xs text-gray-600">{{ getDifferenceTime(post.created_at) }}</span>
           </div>
         </a>
       </div>
     </header>
     <img
       class="w-full max-w-full min-w-full"
-      src="https://images.pexels.com/photos/5797991/pexels-photo-5797991.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260"
-      alt="post"
+      :src="post.image_path"
+      :alt="post.description"
     />
 
     <div class="px-6 pt-4">
@@ -88,41 +88,18 @@
             </svg>
           </span>
         </div>
-        <span class="text-gray-600 text-sm font-bold">1,300 Likes</span>
+        <span class="text-gray-600 text-sm font-bold"
+          >{{ post.countLikes }} Likes</span
+        >
       </div>
       <div class="">
-        <div class="text-sm mb-2 flex flex-start items-center">
-          <a
-            href="#"
-            class="
-              cursor-pointer
-              flex
-              items-center
-              text-sm
-              border-2 border-transparent
-              rounded-full
-              focus:outline-none
-              focus:border-gray-300
-              transition
-              duration-150
-              ease-in-out
-            "
-          >
-            <img
-              class="h-8 w-8 rounded-full object-cover"
-              src="https://images.pexels.com/photos/3460478/pexels-photo-3460478.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
-              alt="usuario"
-            />
-          </a>
-          <p class="font-bold ml-2">
-            <a class="cursor-pointer">Carlos:</a>
-            <span class="text-gray-700 font-medium ml-1">
-              New post, I like plants
-            </span>
-          </p>
-        </div>
+        <comments
+          :comment="post.description"
+          :nickName="post.user.nick_name"
+          :urlImage="post.user.profile_photo_url"
+        ></comments>
         <a class="text-gray-400 text-sm cursor-pointer font-semibold"
-          >23 comments</a
+          >{{ post.countComments }} comments</a
         >
       </div>
     </div>
@@ -130,6 +107,7 @@
     <div class="px-6 pt-4 pb-3">
       <div class="flex items-start">
         <input
+          v-model="textComment"
           class="w-full resize-none outline-none appearance-none"
           aria-label="Agrega un comentario..."
           placeholder="Agrega un comentario..."
@@ -138,6 +116,7 @@
           style="height: 36px"
         />
         <button
+          v-if="textComment.length > 0"
           class="
             mb-2
             focus:outline-none
@@ -152,10 +131,24 @@
     </div>
   </div>
 </template>
+
 <script>
+import Comments from "@/Components/Comments";
+import moment from 'moment'
 export default {
   data() {
-    return {};
+    return {
+      textComment: "",
+    };
   },
+  props: ["post"],
+  components: {
+    Comments
+  },
+  methods:{
+    getDifferenceTime(date){
+      return moment(date).toNow(true)
+    }
+  }
 };
 </script>
