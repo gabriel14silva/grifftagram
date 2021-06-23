@@ -16,6 +16,7 @@
       "
     >
       Agregar publicación
+
     </button>
 
     <div v-if="posts.length > 0">
@@ -23,10 +24,13 @@
         v-for="(post, index) in posts"
         :key="index"
         :post="post"
+        @post="setPost"
       ></post-component>
     </div>
 
     <div v-else class="text-3x1">No hay publicaciones</div>
+
+    <modal-post :show="show" :post="post" @show="changeStateModalPost"></modal-post>
 
     <modal :show="showModal" @close="changeStateShowCreatePost">
       <div class="p-5">
@@ -43,15 +47,13 @@
               appearance-none
               border-none
             "
-            placeholder="En que estás pensando?"
-          />
+            placeholder="En que estás pensando?">
           <div class="my-5">
             <img
               v-if="url"
               :src="url"
-              style="max-width: 100%; max-height: 400px; margin: 0 auto"
-            />
-            <div>
+              style="max-width: 100%; max-height: 400px; margin: 0 auto;">
+            </div>
               <div class="flex justify-end">
                 <button
                   @click="selectImage"
@@ -90,9 +92,10 @@
                   style="display: none"
                 />
               </div>
-              <div class="text-red-500 p-2 mt-5">{{ this.error }}</div>
+              <div class="text-red-500 p-2 mt-5">{{ this.error }}
+              </div>
             </div>
-            <button
+              <button
               @click="createPost"
               v-if="text.length > 0 && image != null"
               class="
@@ -111,8 +114,6 @@
             >
               Publicar
             </button>
-          </div>
-        </div>
       </div>
     </modal>
   </div>
@@ -120,22 +121,26 @@
 
 <script>
 import PostComponent from "@/Components/PostComponent";
+import ModalPost from "@/Components/ModalPost"
 import Modal from "@/Jetstream/Modal";
 
 export default {
   data() {
     return {
       showModal: false,
+      show:false,
       url: null,
       image: null,
       text: "",
       posts: [],
+      post:[],
       error: null,
     };
   },
   components: {
     PostComponent,
-    Modal,
+    ModalPost,
+    Modal
   },
   methods: {
     async getPosts() {
@@ -145,6 +150,9 @@ export default {
     },
     changeStateShowCreatePost() {
       this.showModal = !this.showModal;
+    },
+    changeStateModalPost() {
+       this.show = !this.show;
     },
     filechange(e) {
       let file = e.target.files[0];
@@ -186,6 +194,10 @@ export default {
       this.image = null;
       this.text = "";
     },
+  setPost(post){
+    this.show = !this.show
+    this.post = post
+  },
   },
   created() {
     this.getPosts();

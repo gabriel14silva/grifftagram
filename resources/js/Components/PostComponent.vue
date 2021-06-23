@@ -55,9 +55,10 @@
     <div class="px-6 pt-4">
       <div class="mb-2">
         <div class="flex items-center">
-          <span class="mr-3 inline-flex items-center cursor-pointer">
+          <span @click="likeDislike" class="mr-3 inline-flex items-center cursor-pointer">
             <svg
-              class="text-gray-700 inline-block h-7 w-7"
+              class="text-red-500 inline-block h-7 w-7"
+              :class="[post.likes.find(like => like.user_id === $page.props.user.id) ? 'fill-current' : 'hover:fill-current']"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -71,7 +72,7 @@
               />
             </svg>
           </span>
-          <span class="mr-3 inline-flex items-center cursor-pointer">
+          <span @click="setPost" class="mr-3 inline-flex items-center cursor-pointer">
             <svg
               class="text-gray-700 inline-block h-7 w-7"
               xmlns="http://www.w3.org/2000/svg"
@@ -148,7 +149,21 @@ export default {
   methods:{
     getDifferenceTime(date){
       return moment(date).toNow(true)
+    },
+    setPost(){
+      this.$emit('post',this.post)
+    },
+    async likeDislike(){
+      await axios.post('/like-post',{post_id: this.post.id})
+        .then(response => {
+          this.post.likes = response.data.likes
+          if(response.data.like){
+            this.post.countLikes++
+          }else{
+            --this.post.countLikes
+          }
+        })
     }
-  }
+  },
 };
 </script>

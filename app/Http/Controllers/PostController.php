@@ -41,4 +41,24 @@ class PostController extends Controller
     public function getPosts(){
         return $this->post->getPost(Auth::id());
     }
+
+    public function likeOrDislike(Request $request){
+        try {
+            $postId = $request->post_id;
+            $userId = auth()->user()->id;
+    
+            if($this->likes->where('post_id',$postId)->where('user_id',$userId)->exists()){
+                $this->likes->deleteLike($postId,$userId);
+    
+                return response()->json(['like' => false,'likes' => $this->likes->where('post_id',$postId)->get()]);
+            }else{
+                $this->likes->like($postId,$userId);
+    
+                return response()->json(['like' => true,'likes' => $this->likes->where('post_id',$postId)->get()]);
+    
+            }
+        } catch (\Exception $e) {
+            return response()->json($e->getMessage(),500);
+        }
+    }
 }
